@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@EventListener
 public class UserCreatedEventListener {
-  @EventListener
   public void handle(UserCreatedEvent userCreatedEvent) {
     log.info("Received user created event {}", userCreatedEvent.getEventId());
   }

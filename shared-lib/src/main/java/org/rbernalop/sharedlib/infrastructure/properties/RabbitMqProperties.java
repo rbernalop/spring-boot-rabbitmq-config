@@ -1,4 +1,4 @@
-package org.rbernalop.sharedlib.infrastructure.configuration;
+package org.rbernalop.sharedlib.infrastructure.properties;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "spring.rabbitmq.template")
 public class RabbitMqProperties {
-  private String exchange;
   private String routingKey;
   private String defaultReceiveQueue;
 }

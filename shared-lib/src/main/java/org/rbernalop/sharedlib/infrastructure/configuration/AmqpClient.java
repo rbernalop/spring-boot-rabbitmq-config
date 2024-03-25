@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class AmqpBindingService {
+public class AmqpClient {
   private final TopicExchange exchangeToConsumeFrom;
   private final Queue queue;
   private final AmqpAdmin amqpAdmin;
@@ -50,7 +50,7 @@ public class AmqpBindingService {
   private List<Binding> getBindingsForQueue() {
     try {
       URL url = new URL("http://localhost:15672/api");
-      Client rabbitmqManagementApiClient = new Client( url, "guest", "guest");
+      Client rabbitmqManagementApiClient = new Client(url, "guest", "guest");
       return rabbitmqManagementApiClient.getQueueBindings("/", queue.getName()).stream()
           .filter(binding -> exchangeToConsumeFrom.getName().equals(binding.getSource()))
           .map(bindingInfo -> new Binding(

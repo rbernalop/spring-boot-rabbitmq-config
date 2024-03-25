@@ -1,4 +1,4 @@
-package org.rbernalop.sharedlib.infrastructure.configuration;
+package org.rbernalop.sharedlib.infrastructure;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;

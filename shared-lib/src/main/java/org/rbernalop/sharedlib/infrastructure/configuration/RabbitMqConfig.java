@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.rbernalop.sharedlib.infrastructure.properties.RabbitMqProperties;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
@@ -51,9 +52,9 @@ public class RabbitMqConfig {
   }
 
   @Bean
-  public List<Binding> exchangeToConsumeFromBindings(@Autowired final AmqpBindingService amqpBindingService) {
-    return rabbitMqProperties.getRoutingKey() == null ? new ArrayList<>()
-        : amqpBindingService.addRoutingKey(rabbitMqProperties.getRoutingKey().split(","));
+  public List<Binding> exchangeToConsumeFromBindings(@Autowired final AmqpClient amqpClient) {
+    String routingKey = rabbitMqProperties.getRoutingKey();
+    return routingKey == null ? new ArrayList<>() : amqpClient.addRoutingKey(routingKey.split(","));
   }
 
   @Bean
