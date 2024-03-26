@@ -40,6 +40,7 @@ public class ConsumeEventFilter {
       for (Method method : methods) {
         if (handlesEventType(method, domainEvent.getClass())) {
           method.invoke(bean, domainEvent);
+          return;
         }
       }
     }
