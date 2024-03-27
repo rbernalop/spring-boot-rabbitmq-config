@@ -7,8 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-@EventListener
-public class ProductCreatedEventListener {
+public class ProductCreatedEventListener implements EventListener<ProductCreatedEvent> {
   public void handle(ProductCreatedEvent productCreatedEvent) {
     log.info("Received product created event {}", productCreatedEvent.getEventId());
   }

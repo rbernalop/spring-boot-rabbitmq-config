@@ -2,13 +2,12 @@ package org.rbernalop.sharedlib.infrastructure;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Map;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.rbernalop.sharedlib.application.service.DomainEventService;
 import org.rbernalop.sharedlib.domain.DomainEvent;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
@@ -16,9 +15,8 @@ import org.springframework.util.ReflectionUtils;
 @Slf4j
 @RequiredArgsConstructor
 public class ConsumeEventFilter {
-
   private final DomainEventService domainEventService;
-  private final ApplicationContext applicationContext;
+  private final List<EventListener<?>> eventListeners;
 
   @RabbitListener(queues = "${spring.rabbitmq.template.default-receive-queue}")
   public void beforeEventListener(DomainEvent<?> domainEvent) throws Throwable {
@@ -34,14 +32,11 @@ public class ConsumeEventFilter {
   }
 
   private void callEventHandler(DomainEvent<?> domainEvent) throws InvocationTargetException, IllegalAccessException {
-    Map<String, Object> beansWithEventListener = applicationContext.getBeansWithAnnotation(EventListener.class);
-    for (Object bean : beansWithEventListener.values()) {
-      Method[] methods = ReflectionUtils.getDeclaredMethods(bean.getClass());
-      for (Method method : methods) {
-        if (handlesEventType(method, domainEvent.getClass())) {
-          method.invoke(bean, domainEvent);
-          return;
-        }
+    for (EventListener<?> eventListener : eventListeners) {
+      Method[] methods = ReflectionUtils.getDeclaredMethods(eventListener.getClass());
+      if (methods.length >= 1 && handlesEventType(methods[0], domainEvent.getClass())) {
+        methods[0].invoke(eventListener, domainEvent);
+        return;
       }
     }
 

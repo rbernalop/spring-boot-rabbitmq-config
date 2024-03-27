@@ -11,12 +11,16 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@EventListener
-public class DomainEventListener {
+public class DomainEventListener implements EventListener<DomainEvent<?>> {
   private final DomainEventStorage domainEventStorage;
 
-  public void handle(DomainEvent<?> domainEvent) throws JsonProcessingException {
+  @Override
+  public void handle(DomainEvent domainEvent) {
     log.info("Received domain event {} {}", domainEvent.getEventId(), domainEvent.getType());
-    domainEventStorage.store(domainEvent);
+    try {
+      domainEventStorage.store(domainEvent);
+    } catch (JsonProcessingException e) {
+      log.error(e.getMessage());
+    }
   }
 }

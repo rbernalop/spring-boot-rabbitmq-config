@@ -1,13 +1,7 @@
 package org.rbernalop.sharedlib.infrastructure;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.rbernalop.sharedlib.domain.DomainEvent;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD, ElementType.ANNOTATION_TYPE})
-@Inherited
-public @interface EventListener {
+public interface EventListener<T extends DomainEvent<?>> {
+  void handle(T event);
 }
